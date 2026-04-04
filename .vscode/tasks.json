@@ -1,0 +1,19 @@
+//code pour lancer le serveur FastAPI automatiquement à l'ouverture du dossier dans VS Code
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Lancer le serveur",
+            "type": "shell",
+            "command": "uvicorn main:app --reload",
+            "isBackground": true,
+            "problemMatcher": [],
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/RENOVTACANA"
+            }
+        }
+    ]
+}

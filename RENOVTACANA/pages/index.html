@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RenovTaCana — Accueil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <!-- Barre de bienvenue -->
+    <div class="welcome-bar">
+        <strong>RenovTaCana</strong> — Outil de planification des travaux du réseau d'eau · Métropole Nice Côte d'Azur
+    </div>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="site-header__left">
+            <img src="../assets/images/logo_entreprise.png" alt="Logo Métropole Nice Côte d'Azur"
+                class="site-header__logo">
+            <div class="header-badge">
+                <span class="header-badge__dot"></span>
+                Système actif
+            </div>
+        </div>
+        <div class="site-header__right">
+            <h1 class="site-header__title">Renov<span>Ta</span>Cana</h1>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <main class="hero">
+        <div class="hero__grid"></div>
+        <div class="hero__glow"></div>
+
+        <section class="hero__content">
+
+            <p class="hero__eyebrow">Réseau hydraulique urbain</p>
+
+            <h2 class="hero__title">
+                Planifiez la<br>
+                <em>rénovation</em> de votre<br>
+                réseau d'eau
+            </h2>
+
+            <p class="hero__subtitle">
+                Localisez, analysez et priorisez les canalisations à rénover
+                sur l'ensemble du territoire métropolitain.
+            </p>
+
+            <!-- Barre de recherche -->
+            <form class="search-bar search-bar--hero" action="pages/adresses.html" method="get">
+                <button type="button" class="search-bar__icon-button" aria-label="Rechercher">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                </button>
+                <input type="text" name="adresse" class="search-bar__input"
+                    placeholder="Ex : 12 avenue Jean Médecin, Nice…" aria-label="Entrer une adresse" autocomplete="off">
+                <button type="button"
+                    class="search-bar__icon-button search-bar__icon-button--small search-bar__clear-button"
+                    aria-label="Effacer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+                <button type="submit" class="search-bar__submit">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                    Analyser
+                </button>
+            </form>
+
+            <!-- Lien carte -->
+            <a href="carte.html" class="hero__map-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+                    <line x1="8" y1="2" x2="8" y2="18" />
+                    <line x1="16" y1="6" x2="16" y2="22" />
+                </svg>
+                Rechercher directement sur la carte interactive
+            </a>
+            <a href="dashboard.html" class="hero__map-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                </svg>
+                Tableau de bord & plan de travaux
+            </a>
+
+            <!-- Stats -->
+            <div class="hero__stats">
+                <div class="hero__stat">
+                    <div class="hero__stat-value">8 171</div>
+                    <div class="hero__stat-label">Canalisations</div>
+                </div>
+                <div class="hero__stats-sep"></div>
+                <div class="hero__stat">
+                    <div class="hero__stat-value">574<span> km</span></div>
+                    <div class="hero__stat-label">Réseau total</div>
+                </div>
+                <div class="hero__stats-sep"></div>
+                <div class="hero__stat">
+                    <div class="hero__stat-value">2 109</div>
+                    <div class="hero__stat-label">Chantiers suivis</div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Bandeau coulissant crédits -->
+    <div class="credits-ticker">
+        <div class="credits-ticker__track">
+            <span class="credits-ticker__item">
+                <span class="credits-ticker__label">En partenariat avec</span>
+                <span class="credits-ticker__school">EPF École d'ingénieur</span>
+            </span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__item">Par</span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__name">Etienne Girard</span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__name">Oscar Hunault</span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__name">Ulysse GGG</span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__name">Nicolas Demars</span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__name">Adrien Letort</span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__name">Jules Cinc</span>
+            <span class="credits-ticker__sep">——</span>
+            <!-- Duplicate pour boucle infinie -->
+            <span class="credits-ticker__item">
+                <span class="credits-ticker__label">En partenariat avec</span>
+                <span class="credits-ticker__school">EPF École d'ingénieur</span>
+            </span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__item">Par</span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__name">Etienne Girard</span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__name">Oscar Hunault</span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__name">Ulysse GGG</span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__name">Nicolas Demars</span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__name">Adrien Letort</span>
+            <span class="credits-ticker__sep">·</span>
+            <span class="credits-ticker__name">Jules Cinc</span>
+            <span class="credits-ticker__sep">——</span>
+        </div>
+    </div>
+
+    <script src="../js/search.js"></script>
+
+</body>
+
+</html>

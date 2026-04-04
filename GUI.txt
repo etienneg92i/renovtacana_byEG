@@ -1,0 +1,43 @@
+🗄️ Données & Formats
+Shapefile (.shp / .dbf / .shx / .prj)
+Format SIG (Système d'Information Géographique) créé par Esri. C'est le format dans lequel le client t'a fourni les canalisations. Le .shp contient les tracés géographiques, le .dbf contient les attributs (adresse, matériau, etc.), le .shx est un index de navigation et le .prj définit le système de coordonnées.
+GeoJSON
+Format JSON standard pour représenter des données géographiques sur le web. On convertit les shapefiles en GeoJSON pour pouvoir les afficher dans Leaflet. C'est le format universel du web cartographique — n'importe quel outil web peut le lire.
+Lambert-93 → WGS84
+Le client stocke ses coordonnées en Lambert-93 (système français officiel, en mètres). Le web cartographique utilise WGS84 (latitude/longitude en degrés, le système GPS). On fait la conversion mathématique pour que Leaflet puisse placer les canalisations au bon endroit.
+SQLite
+Base de données légère stockée dans un seul fichier (renovtacana.db). Pas besoin d'installer un serveur de base de données — tout est dans le fichier. On y stocke les 55 524 canalisations, les 2 109 chantiers et les 167 opérations pour pouvoir les filtrer, trier et paginer efficacement.
+
+⚙️ Backend
+Python
+Langage de programmation qu'on utilise pour deux choses : traiter les données (lire les shapefiles, construire la DB) et faire tourner le serveur web.
+FastAPI
+Framework Python pour créer des APIs web. Il expose des routes comme /api/canalisations ou /api/dashboard que le frontend appelle pour récupérer les données. C'est lui qui fait le lien entre la base SQLite et le navigateur.
+Uvicorn
+Serveur web qui fait tourner FastAPI. Sans lui, FastAPI ne peut pas recevoir de requêtes. C'est lui que tu lances avec uvicorn main:app --reload. Le --reload fait qu'il redémarre automatiquement quand tu modifies main.py.
+Gzip
+Algorithme de compression. On compresse le GeoJSON (14 MB → 2.1 MB) pour que la carte se charge 7x plus vite. Le navigateur décompresse automatiquement à la réception.
+
+🗺️ Cartographie
+Leaflet
+Bibliothèque JavaScript open-source pour afficher des cartes interactives dans un navigateur. C'est elle qui affiche le fond de carte, les canalisations colorées, gère le zoom, les clics, etc. C'est l'équivalent gratuit de Google Maps pour les développeurs.
+Leaflet.Draw
+Extension de Leaflet qui ajoute des outils de dessin sur la carte. On l'utilise pour la sélection de zone rectangulaire.
+CartoDB Dark Matter
+Le fond de carte sombre (les rues, villes, relief en arrière-plan). C'est un service de tuiles cartographiques gratuit, hébergé par CartoDB. Leaflet le charge automatiquement depuis internet.
+
+🌐 Frontend
+HTML / CSS / JavaScript
+Les trois langages du web. HTML structure la page, CSS la stylise, JavaScript la rend interactive.
+Live Server (extension VSCode)
+Lance un petit serveur local pour afficher tes fichiers HTML dans le navigateur avec rechargement automatique à chaque sauvegarde. Sans lui tu devrais ouvrir les fichiers directement depuis l'explorateur Windows ce qui pose des problèmes de sécurité avec les requêtes API.
+SessionStorage
+Stockage temporaire dans le navigateur (dure le temps de l'onglet). On l'utilise pour passer la liste des IDs de canalisations sélectionnées sur la carte vers la page tableau, sans passer par l'URL.
+
+🛠️ Outils de développement
+VSCode
+L'éditeur de code qu'on utilise pour écrire et modifier tous les fichiers du projet.
+QGIS
+Logiciel SIG desktop gratuit pour visualiser et analyser les données géographiques. Utile pour explorer les shapefiles du client avant de les intégrer.
+pip
+Gestionnaire de paquets Python. Permet d'installer des bibliothèques comme FastAPI ou Uvicorn avec pip install.
