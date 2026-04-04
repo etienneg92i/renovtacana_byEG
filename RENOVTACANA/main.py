@@ -7,6 +7,7 @@ from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import sqlite3, os, re
+import unicodedata
 
 app = FastAPI(title="RenovTaCana API", version="2.0.0")
 
@@ -23,7 +24,19 @@ DB_PATH = os.path.join(os.path.dirname(__file__), "sqlite", "renovtacana.db")
 def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
+    conn.create_function("normalize_text", 1, normalize_text)
     return conn
+
+
+def normalize_text(value):
+    if value is None:
+        return ""
+    text = str(value).strip().lower()
+    text = unicodedata.normalize("NFD", text)
+    text = "".join(ch for ch in text if unicodedata.category(ch) != "Mn")
+    text = re.sub(r"[^a-z0-9\s]", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
 
 
 # ── CANALISATIONS ─────────────────────────────────────────
@@ -98,6 +111,81 @@ def get_canalisations(
     rows = [dict(r) for r in cur.fetchall()]
     conn.close()
     return {"total": total, "offset": offset, "limit": limit, "canalisations": rows}
+
+
+@app.get("/api/adresses/suggestions")
+def get_adresse_suggestions(
+    q: str = Query(default=""),
+    limit: int = Query(default=5, ge=1, le=10),
+):
+    normalized_query = normalize_text(q)
+    if len(normalized_query) < 2:
+        return {"query": q, "suggestions": []}
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        WITH base AS (
+            SELECT
+                adresse,
+                commune,
+                COUNT(*) AS nb,
+                normalize_text(adresse) AS n_adresse,
+                normalize_text(COALESCE(commune, '')) AS n_commune,
+                normalize_text(adresse || ' ' || COALESCE(commune, '')) AS n_full
+            FROM canalisations
+            WHERE adresse != ''
+            GROUP BY adresse, commune
+        ),
+        q AS (
+            SELECT normalize_text(?) AS nq
+        ),
+        scored AS (
+            SELECT
+                b.adresse,
+                b.commune,
+                b.nb,
+                CASE
+                    WHEN b.n_adresse = q.nq OR b.n_full = q.nq THEN 0
+                    WHEN b.n_adresse LIKE q.nq || '%' THEN 1
+                    WHEN b.n_full LIKE q.nq || '%' THEN 2
+                    WHEN INSTR(b.n_adresse, ' ' || q.nq) > 0 THEN 3
+                    WHEN INSTR(b.n_full, ' ' || q.nq) > 0 THEN 4
+                    WHEN INSTR(b.n_adresse, q.nq) > 0 THEN 5
+                    WHEN INSTR(b.n_full, q.nq) > 0 THEN 6
+                    ELSE 9
+                END AS score,
+                CASE
+                    WHEN INSTR(b.n_adresse, q.nq) = 0 THEN 9999
+                    ELSE INSTR(b.n_adresse, q.nq)
+                END AS pos
+            FROM base b
+            CROSS JOIN q
+            WHERE b.n_full LIKE '%' || q.nq || '%'
+               OR b.n_adresse LIKE '%' || q.nq || '%'
+               OR b.n_commune LIKE '%' || q.nq || '%'
+        )
+        SELECT adresse, commune, nb
+        FROM scored
+        ORDER BY score ASC, pos ASC, LENGTH(adresse) ASC, nb DESC
+        LIMIT ?
+    """, (q, limit))
+
+    suggestions = []
+    for row in cur.fetchall():
+        adresse = row["adresse"] or ""
+        commune = row["commune"] or ""
+        full_label = f"{adresse}, {commune}" if commune else adresse
+        suggestions.append({
+            "adresse": adresse,
+            "commune": commune,
+            "label": full_label,
+            "count": row["nb"],
+        })
+
+    conn.close()
+    return {"query": q, "suggestions": suggestions}
 
 
 # ── DASHBOARD ─────────────────────────────────────────────

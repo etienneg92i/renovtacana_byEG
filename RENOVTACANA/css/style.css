@@ -282,6 +282,64 @@ input { font-family: inherit; }
 .search-bar__icon-button svg { width: 18px; height: 18px; }
 .search-bar__icon-button--small svg { width: 14px; height: 14px; }
 
+.search-bar--suggest {
+    position: relative;
+}
+
+.search-suggest {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    display: none;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border-2);
+    border-radius: var(--radius-md);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    z-index: 120;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.search-suggest--open {
+    display: block;
+}
+
+.search-suggest__item {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 10px 12px;
+    border: none;
+    border-bottom: 1px solid var(--c-border);
+    background: transparent;
+    color: var(--c-text);
+    text-align: left;
+    cursor: pointer;
+}
+
+.search-suggest__item:last-child {
+    border-bottom: none;
+}
+
+.search-suggest__item:hover,
+.search-suggest__item--active {
+    background: var(--c-cyan-dim);
+}
+
+.search-suggest__main {
+    font-size: 0.86rem;
+    color: var(--c-text);
+}
+
+.search-suggest__sub {
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--c-text-dim);
+}
+
 /* =========================================================
    7. PAGE ACCUEIL — HERO
    ========================================================= */
