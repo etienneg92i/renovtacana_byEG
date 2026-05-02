@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RenovTaCana — Carte</title>
+    <title>RenovTaCana - Carte</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -20,7 +20,6 @@
 
     <header class="site-header site-header--map">
 
-        <!-- Logo + accueil -->
         <div class="mh-left">
             <img src="../assets/images/logo_entreprise.png" alt="Logo" class="site-header__logo">
             <a href="index.html" class="header-home" title="Accueil">
@@ -32,7 +31,6 @@
             </a>
         </div>
 
-        <!-- Barre de recherche -->
         <form class="search-bar search-bar--map" id="search-form">
             <button class="search-bar__icon-button" type="submit" aria-label="Rechercher">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -41,7 +39,7 @@
                     <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
             </button>
-            <input type="text" name="adresse" class="search-bar__input" placeholder="Rechercher une adresse…"
+            <input type="text" name="adresse" class="search-bar__input" placeholder="Rechercher une adresse..."
                 autocomplete="off">
             <button type="button"
                 class="search-bar__icon-button search-bar__icon-button--small search-bar__clear-button"
@@ -54,17 +52,15 @@
             </button>
         </form>
 
-        <!-- Filtres criticité -->
         <div class="map-filter-btns">
             <button class="map-filter-btn active" data-filter="all">Tous</button>
-            <button class="map-filter-btn" data-filter="critique">🔴 Critique</button>
-            <button class="map-filter-btn" data-filter="attention">🟠 Attention</button>
-            <button class="map-filter-btn" data-filter="bon">🟢 Bon état</button>
+            <button class="map-filter-btn" data-filter="critique">Critique</button>
+            <button class="map-filter-btn" data-filter="attention">Attention</button>
+            <button class="map-filter-btn" data-filter="bon">Bon etat</button>
         </div>
 
         <div class="mh-sep"></div>
 
-        <!-- Boutons actions -->
         <div class="map-actions">
             <button class="map-toggle-btn" id="toggle-chantiers">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -93,11 +89,11 @@
             </a>
         </div>
 
-        <!-- Badge + titre compact -->
         <div class="mh-right">
+            <button class="theme-toggle" type="button" aria-label="Mode sombre">Mode sombre</button>
             <div class="header-badge">
                 <span class="header-badge__dot"></span>
-                <span id="map-count">Chargement…</span>
+                <span id="map-count">Chargement...</span>
             </div>
             <span class="map-brand">RTC</span>
         </div>
@@ -107,9 +103,8 @@
     <main class="map-page">
         <div id="map"></div>
 
-        <!-- Légende -->
         <aside class="map-widget map-legend">
-            <div class="map-legend__title">Criticité</div>
+            <div class="map-legend__title">Criticite</div>
             <div class="map-legend__scale">
                 <div class="map-legend__gradient"></div>
                 <div class="map-legend__labels">
@@ -117,51 +112,49 @@
                 </div>
             </div>
             <div class="map-legend__items">
-                <div class="map-legend__item"><span class="dot" style="background:#ef4444"></span>Critique ≥70%</div>
-                <div class="map-legend__item"><span class="dot" style="background:#f97316"></span>Attention 40–70%</div>
-                <div class="map-legend__item"><span class="dot" style="background:#00d4aa"></span>Bon état &lt;40%</div>
-                <div class="map-legend__item"><span class="dot" style="background:#475569"></span>Non évalué</div>
+                <div class="map-legend__item"><span class="dot" style="background:#ef4444"></span>Critique >= 70%</div>
+                <div class="map-legend__item"><span class="dot" style="background:#f97316"></span>Attention 40-70%</div>
+                <div class="map-legend__item"><span class="dot" style="background:#00d4aa"></span>Bon etat &lt; 40%</div>
+                <div class="map-legend__item"><span class="dot" style="background:#475569"></span>Non evalue</div>
             </div>
         </aside>
 
-        <!-- Tooltip survol -->
         <div class="map-tooltip" id="map-tooltip" style="display:none">
             <div class="map-tooltip__id" id="tt-id"></div>
             <div class="map-tooltip__row"><span>Adresse</span><strong id="tt-adr"></strong></div>
-            <div class="map-tooltip__row"><span>Matériaux</span><strong id="tt-mat"></strong></div>
-            <div class="map-tooltip__row"><span>Diamètre</span><strong id="tt-diam"></strong></div>
+            <div class="map-tooltip__row"><span>Materiaux</span><strong id="tt-mat"></strong></div>
+            <div class="map-tooltip__row"><span>Diametre</span><strong id="tt-diam"></strong></div>
             <div class="map-tooltip__row"><span>Longueur</span><strong id="tt-long"></strong></div>
             <div class="map-tooltip__crit">
-                <span>Criticité</span>
+                <span>Criticite</span>
                 <div class="tt-bar">
                     <div class="tt-bar__fill" id="tt-fill"></div>
                 </div>
                 <strong id="tt-crit-val"></strong>
             </div>
-            <div class="map-tooltip__action">Cliquer pour voir le détail →</div>
+            <div class="map-tooltip__action">Cliquer pour voir le detail -></div>
         </div>
 
-        <!-- Panel zone sélection -->
         <div class="zone-panel" id="zone-panel" style="display:none">
             <div class="zone-panel__header">
-                <span id="zone-title">Zone sélectionnée</span>
-                <button class="zone-panel__close" id="zone-close">✕</button>
+                <span id="zone-title">Zone selectionnee</span>
+                <button class="zone-panel__close" id="zone-close">X</button>
             </div>
             <div class="zone-panel__stats" id="zone-stats"></div>
             <div class="zone-panel__actions">
-                <a class="btn-zone" id="zone-voir-adresses">Voir dans le tableau →</a>
+                <a class="btn-zone" id="zone-voir-adresses">Voir dans le tableau -></a>
             </div>
         </div>
 
-        <!-- Loading -->
         <div class="map-loading" id="map-loading">
             <div class="map-loading__spinner"></div>
-            <span>Chargement des canalisations…</span>
+            <span>Chargement des canalisations...</span>
         </div>
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <script src="../js/theme.js"></script>
     <script src="../js/search.js"></script>
     <script src="../js/carte.js"></script>
 </body>

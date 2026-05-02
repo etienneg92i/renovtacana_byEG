@@ -191,7 +191,7 @@ function renderPlanTable(data, offset = 0) {
             <td style="color:var(--c-text-muted);width:80px">${r.longueur_tot} m</td>
             <td style="font-size:0.72rem;color:var(--c-text-dim);width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">${mats}</td>
             <td style="width:70px">
-                <a class="btn-view" href="adresses.html?adresse=${encodeURIComponent(r.adresse)}">Voir →</a>
+                <a class="btn-view" href="index.html?adresse=${encodeURIComponent(r.adresse)}">Voir →</a>
             </td>
         </tr>`;
     }).join("");

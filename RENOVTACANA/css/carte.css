@@ -29,18 +29,25 @@ html, body { overflow: hidden; }
 
 /* Recherche — prend l'espace disponible */
 .search-bar--map {
-    flex: 1;
-    min-width: 160px;
-    max-width: 380px;
+    flex: 1 1 520px;
+    min-width: 260px;
+    max-width: 520px;
     height: 36px;
 }
-.search-bar--map .search-bar__input { height: 36px; font-size: 0.82rem; }
+.search-bar--map .search-bar__input {
+    height: 36px;
+    font-size: 0.82rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 /* Filtres criticité */
 .map-filter-btns {
     display: flex;
     gap: 4px;
     flex-shrink: 0;
+    min-width: 0;
 }
 
 .map-filter-btn {
@@ -282,6 +289,10 @@ html, body { overflow: hidden; }
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 1100px) {
+    .search-bar--map {
+        min-width: 200px;
+        max-width: 420px;
+    }
     .map-filter-btns .map-filter-btn:nth-child(n+3) { display: none; }
     .map-brand { display: none; }
 }

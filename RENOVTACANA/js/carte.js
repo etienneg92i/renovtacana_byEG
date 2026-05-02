@@ -1,18 +1,19 @@
-/**
- * carte.js — Carte interactive Leaflet
- * Canalisations + overlay chantiers + sélection de zone
+﻿/**
+ * carte.js â€” Carte interactive Leaflet
+ * Canalisations + overlay chantiers + sÃ©lection de zone
  */
 
 const GEOJSON_CANALISATIONS = "http://127.0.0.1:8000/api/geojson/canalisations";
 const GEOJSON_CHANTIERS     = "../assets/data/chantiers.geojson";
 
 let map, geoLayer, chantiersLayer, drawLayer, selectRectangle;
+let baseTileLayer = null;
 let allFeatures    = [];
 let activeFilter   = "all";
 let showChantiers  = false;
 let selectMode     = false;
 
-// ── Init ──────────────────────────────────────────────────
+// â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 document.addEventListener("DOMContentLoaded", async function () {
     initMap();
     await loadCanalisations();
@@ -22,29 +23,50 @@ document.addEventListener("DOMContentLoaded", async function () {
     initZoneSelect();
 });
 
-// ── Carte Leaflet ─────────────────────────────────────────
+// â”€â”€ Carte Leaflet â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function initMap() {
     map = L.map("map", {
-        center: [43.718, 7.330],
-        zoom:   12,
+        center: [43.705, 7.265],
+        zoom:   13,
         zoomControl: false,
     });
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    applyMapTheme();
+
+    L.control.zoom({ position: "topright" }).addTo(map);
+    L.control.scale({ position: "bottomleft", imperial: false, maxWidth: 200 }).addTo(map);
+
+    observeThemeChanges();
+}
+
+function applyMapTheme() {
+    const dark = document.body.classList.contains("theme-dark");
+    const tileUrl = dark
+        ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+
+    if (baseTileLayer) map.removeLayer(baseTileLayer);
+
+    baseTileLayer = L.tileLayer(tileUrl, {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com/">CARTO</a>',
         subdomains: "abcd",
         maxZoom: 20,
     }).addTo(map);
-
-    L.control.zoom({ position: "topright" }).addTo(map);
-    L.control.scale({ position: "bottomleft", imperial: false, maxWidth: 200 }).addTo(map);
 }
 
-// ── Canalisations ─────────────────────────────────────────
+function observeThemeChanges() {
+    const observer = new MutationObserver(() => applyMapTheme());
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ["class"],
+    });
+}
+
+// â”€â”€ Canalisations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadCanalisations() {
     try {
         document.getElementById("map-loading").querySelector("span").textContent = 
-            "Chargement des 55 524 canalisations…";
+            "Chargement des 55 524 canalisationsâ€¦";
         const res  = await fetch(GEOJSON_CANALISATIONS);
         const data = await res.json();
         allFeatures = data.features || [];
@@ -52,10 +74,9 @@ async function loadCanalisations() {
         document.getElementById("map-count").textContent =
             `${allFeatures.length.toLocaleString("fr-FR")} canalisations`;
         document.getElementById("map-loading").style.display = "none";
-        if (geoLayer) map.fitBounds(geoLayer.getBounds(), { padding: [20, 20] });
     } catch(e) {
         document.getElementById("map-loading").innerHTML =
-            `<span style="color:var(--c-danger)">⚠️ Erreur chargement des données</span>`;
+            `<span style="color:var(--c-danger)">âš ï¸ Erreur chargement des donnÃ©es</span>`;
     }
 }
 
@@ -70,7 +91,7 @@ function renderLayer(features) {
             layer.on("mouseout",  ()  => { if (!selectMode) geoLayer.resetStyle(layer); hideTooltip(); });
             layer.on("click",     ()  => {
                 if (selectMode) return;
-                if (p.adr) window.location.href = `adresses.html?adresse=${encodeURIComponent(p.adr)}`;
+                if (p.adr) window.location.href = `index.html?adresse=${encodeURIComponent(p.adr)}`;
             });
         }
     }).addTo(map);
@@ -85,15 +106,15 @@ function getLineStyle(crit) {
     return                    { color: "#00d4aa", weight: 1.5, opacity: 0.65 };
 }
 
-// ── Overlay chantiers ─────────────────────────────────────
+// â”€â”€ Overlay chantiers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function initChantiers() {
     try {
         const res  = await fetch(GEOJSON_CHANTIERS);
         const data = await res.json();
 
         const etatColor = {
-            "Planifié":                    "#22c55e",
-            "Validé en planification":     "#00d4aa",
+            "PlanifiÃ©":                    "#22c55e",
+            "ValidÃ© en planification":     "#00d4aa",
             "En attente de planification": "#64748b",
         };
 
@@ -112,7 +133,7 @@ async function initChantiers() {
                         <div style="font-weight:700;margin-bottom:6px;color:#00d4aa">${p.id}</div>
                         <div style="color:#888;margin-bottom:4px">${p.libelle}</div>
                         <div><b>${p.commune}</b></div>
-                        <div style="color:#888;margin-top:4px">${p.debut} → ${p.fin}</div>
+                        <div style="color:#888;margin-top:4px">${p.debut} â†’ ${p.fin}</div>
                         <div style="margin-top:4px;padding:2px 8px;background:rgba(0,212,170,0.1);
                              border:1px solid rgba(0,212,170,0.3);border-radius:999px;
                              display:inline-block;font-size:11px">${p.etat}</div>
@@ -120,7 +141,7 @@ async function initChantiers() {
                 `, { className: "dark-popup" });
             }
         });
-    } catch(e) { console.warn("Chantiers non chargés", e); }
+    } catch(e) { console.warn("Chantiers non chargÃ©s", e); }
 
     document.getElementById("toggle-chantiers")?.addEventListener("click", function () {
         showChantiers = !showChantiers;
@@ -133,11 +154,11 @@ async function initChantiers() {
     });
 }
 
-// ── Sélection de zone ─────────────────────────────────────
+// â”€â”€ SÃ©lection de zone â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function initZoneSelect() {
     drawLayer = new L.FeatureGroup().addTo(map);
 
-    // Handler rectangle directement (sans passer par le contrôle UI)
+    // Handler rectangle directement (sans passer par le contrÃ´le UI)
     let drawHandler = null;
 
     const btn = document.getElementById("toggle-select");
@@ -151,7 +172,7 @@ function initZoneSelect() {
                 shapeOptions: { color: "#00d4aa", weight: 2, fillOpacity: 0.08, dashArray: "6 4" }
             });
             drawHandler.enable();
-            document.getElementById("map-count").textContent = "Dessinez un rectangle…";
+            document.getElementById("map-count").textContent = "Dessinez un rectangleâ€¦";
         } else {
             drawHandler?.disable();
             drawLayer.clearLayers();
@@ -164,7 +185,7 @@ function initZoneSelect() {
         drawLayer.clearLayers();
         drawLayer.addLayer(e.layer);
         const bounds = e.layer.getBounds();
-        // Désactiver le mode dessin après tracé
+        // DÃ©sactiver le mode dessin aprÃ¨s tracÃ©
         selectMode = false;
         document.getElementById("toggle-select")?.classList.remove("active");
         analyseZone(bounds);
@@ -193,7 +214,7 @@ function analyseZone(bounds) {
     const critMoy = inside.filter(f => f.properties.crit != null)
         .reduce((s, f, _, a) => s + f.properties.crit / a.length, 0);
 
-    // Highlight les canalisations sélectionnées
+    // Highlight les canalisations sÃ©lectionnÃ©es
     renderLayer(inside);
 
     document.getElementById("zone-stats").innerHTML = `
@@ -216,14 +237,14 @@ function analyseZone(bounds) {
     sessionStorage.setItem("zone_ids", JSON.stringify(ids));
     sessionStorage.setItem("zone_count", total);
 
-    document.getElementById("zone-voir-adresses").href = "adresses.html?zone=1";
+    document.getElementById("zone-voir-adresses").href = "index.html?zone=1";
     document.getElementById("zone-title").textContent =
         `${total} canalisation${total > 1 ? "s" : ""} dans la zone`;
     document.getElementById("zone-panel").style.display = "block";
     document.getElementById("map-count").textContent = `${total} dans la zone`;
 }
 
-// ── Filtres rapides ───────────────────────────────────────
+// â”€â”€ Filtres rapides â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function initFilters() {
     document.querySelectorAll(".map-filter-btn").forEach(btn => {
         btn.addEventListener("click", function () {
@@ -250,7 +271,7 @@ function applyFilter() {
         map.fitBounds(geoLayer.getBounds(), { padding: [20, 20] });
 }
 
-// ── Recherche ─────────────────────────────────────────────
+// â”€â”€ Recherche â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function initSearch() {
     const form = document.getElementById("search-form");
     if (!form) return;
@@ -267,10 +288,10 @@ function initSearch() {
         if (matches.length > 0) {
             renderLayer(matches);
             document.getElementById("map-count").textContent =
-                `${matches.length} résultat${matches.length > 1 ? "s" : ""} pour "${query}"`;
+                `${matches.length} rÃ©sultat${matches.length > 1 ? "s" : ""} pour "${query}"`;
             if (geoLayer) map.fitBounds(geoLayer.getBounds(), { padding: [40, 40] });
         } else {
-            window.location.href = `adresses.html?adresse=${encodeURIComponent(query)}`;
+            window.location.href = `index.html?adresse=${encodeURIComponent(query)}`;
         }
     });
 
@@ -283,15 +304,15 @@ function initSearch() {
     });
 }
 
-// ── Tooltip ───────────────────────────────────────────────
+// â”€â”€ Tooltip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const tooltip = document.getElementById("map-tooltip");
 
 function showTooltip(e, p) {
     document.getElementById("tt-id").textContent   = p.id || "";
-    document.getElementById("tt-adr").textContent  = p.adr || "—";
-    document.getElementById("tt-mat").textContent  = p.mat || "—";
-    document.getElementById("tt-diam").textContent = p.diam ? `${p.diam} mm` : "—";
-    document.getElementById("tt-long").textContent = p.long ? `${p.long} m` : "—";
+    document.getElementById("tt-adr").textContent  = p.adr || "â€”";
+    document.getElementById("tt-mat").textContent  = p.mat || "â€”";
+    document.getElementById("tt-diam").textContent = p.diam ? `${p.diam} mm` : "â€”";
+    document.getElementById("tt-long").textContent = p.long ? `${p.long} m` : "â€”";
     const crit = p.crit;
     if (crit != null) {
         document.getElementById("tt-crit-val").textContent = `${crit.toFixed(1)}%`;
@@ -299,7 +320,7 @@ function showTooltip(e, p) {
         fill.style.width      = `${Math.min(crit,100)}%`;
         fill.style.background = crit >= 70 ? "#ef4444" : crit >= 40 ? "#f97316" : "#00d4aa";
     } else {
-        document.getElementById("tt-crit-val").textContent = "—";
+        document.getElementById("tt-crit-val").textContent = "â€”";
         document.getElementById("tt-fill").style.width = "0%";
     }
     tooltip.style.display = "block";
@@ -317,3 +338,4 @@ function moveTooltip(e) {
 }
 
 function hideTooltip() { tooltip.style.display = "none"; }
+

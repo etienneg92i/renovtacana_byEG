@@ -5,14 +5,14 @@ RENOVTACANA/
 ├── pages/
 │   ├── index.html          ← Page d'accueil (hero + recherche)
 │   ├── carte.html          ← Page carte heatmap
-│   └── adresses.html       ← Page résultats adresse
+│   └── index.html          ← Page résultats adresse (page d'accueil)
 │
 ├── css/
 │   └── style.css           ← Feuille de style unique (toutes les pages)
 │
 ├── js/
 │   ├── search.js           ← Logique barre de recherche (clear + focus)
-│   └── adresse.js          ← Logique page adresse (URL params + export)
+│   └── index.js          ← Logique page index (adresses) (URL params + export)
 │
 └── assets/
     ├── images/
@@ -24,9 +24,9 @@ RENOVTACANA/
 ```
 
 ## Chemins des liens
-- `index.html` est dans `/pages/` → liens vers `carte.html` et `adresses.html`
+- `index.html` est dans `/pages/` → liens vers `carte.html` et `dashboard.html`
 - CSS : `../css/style.css`
-- JS  : `../js/search.js` et `../js/adresse.js`
+- JS  : `../js/search.js` et `../js/index.js`
 - Assets : `../assets/images/` et `../assets/icons/`
 
 ## Polices utilisées (Google Fonts)

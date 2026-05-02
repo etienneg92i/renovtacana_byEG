@@ -1,5 +1,5 @@
 /**
- * adresse.js — Page résultats adresse
+ * index.js — Page résultats adresse
  * Pagination serveur : les filtres/tri/pages sont envoyés à l'API
  */
 
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("search-form")?.addEventListener("submit", e => {
         e.preventDefault();
         const v = e.target.querySelector(".search-bar__input").value.trim();
-        if (v) window.location.href = `adresses.html?adresse=${encodeURIComponent(v)}`;
+        if (v) window.location.href = `index.html?adresse=${encodeURIComponent(v)}`;
     });
 
     markSortHeader("criticite", "desc");

@@ -1,7 +1,7 @@
-/* =========================================================
-   RENOVTACANA — FEUILLE DE STYLE PRINCIPALE
-   Direction esthétique : Industriel / Utilitaire Raffiné
-   Palette : Dark navy + Cyan eau + Blanc cassé
+﻿/* =========================================================
+   RENOVTACANA â€” FEUILLE DE STYLE PRINCIPALE
+   Direction esthÃ©tique : Industriel / Utilitaire RaffinÃ©
+   Palette : Dark navy + Cyan eau + Blanc cassÃ©
    ========================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Syne:wght@400;600;700;800&display=swap');
@@ -11,19 +11,19 @@
    ========================================================= */
 :root {
     /* Couleurs */
-    --c-bg:          #0a0e14;
-    --c-surface:     #111820;
-    --c-surface-2:   #161e28;
-    --c-border:      #1e2d3d;
-    --c-border-2:    #263547;
+    --c-bg:          #f4f8fc;
+    --c-surface:     #ffffff;
+    --c-surface-2:   #edf3fa;
+    --c-border:      #d4dfec;
+    --c-border-2:    #b8c8dc;
 
     --c-cyan:        #00d4aa;
     --c-cyan-dim:    rgba(0, 212, 170, 0.12);
     --c-cyan-glow:   rgba(0, 212, 170, 0.25);
 
-    --c-text:        #e8edf2;
-    --c-text-muted:  #5a7a8a;
-    --c-text-dim:    #3a5060;
+    --c-text:        #11243b;
+    --c-text-muted:  #36506a;
+    --c-text-dim:    #5a7188;
 
     --c-success:     #22c55e;
     --c-warning:     #f59e0b;
@@ -44,6 +44,17 @@
     --t-fast:        0.15s ease;
     --t-mid:         0.25s ease;
     --t-slow:        0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.theme-dark {
+    --c-bg:          #0a0e14;
+    --c-surface:     #111820;
+    --c-surface-2:   #161e28;
+    --c-border:      #1e2d3d;
+    --c-border-2:    #263547;
+    --c-text:        #e8edf2;
+    --c-text-muted:  #5a7a8a;
+    --c-text-dim:    #3a5060;
 }
 
 /* =========================================================
@@ -109,7 +120,7 @@ input { font-family: inherit; }
     top: 0;
     z-index: 100;
     height: var(--header-h);
-    background: rgba(10, 14, 20, 0.92);
+    background: color-mix(in oklab, var(--c-surface) 90%, transparent);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--c-border);
@@ -149,11 +160,15 @@ input { font-family: inherit; }
 .site-header__logo {
     height: 40px;
     width: auto;
-    filter: brightness(0) invert(1);
+    filter: none;
     opacity: 0.85;
     transition: opacity var(--t-mid);
 }
 .site-header__logo:hover { opacity: 1; }
+
+body.theme-dark .site-header__logo {
+    filter: brightness(0) invert(1);
+}
 
 .site-header__title {
     font-family: var(--font-display);
@@ -232,6 +247,28 @@ input { font-family: inherit; }
     background: var(--c-cyan-dim);
 }
 .header-export svg { width: 15px; height: 15px; }
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border: 1px solid var(--c-border-2);
+    border-radius: var(--radius-sm);
+    background: var(--c-surface-2);
+    color: var(--c-text-muted);
+    font-size: 0.76rem;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all var(--t-mid);
+}
+
+.theme-toggle:hover {
+    border-color: var(--c-cyan);
+    color: var(--c-cyan);
+    background: var(--c-cyan-dim);
+}
 
 /* =========================================================
    6. BARRE DE RECHERCHE
@@ -341,7 +378,7 @@ input { font-family: inherit; }
 }
 
 /* =========================================================
-   7. PAGE ACCUEIL — HERO
+   7. PAGE ACCUEIL â€” HERO
    ========================================================= */
 .hero {
     position: relative;
@@ -353,7 +390,7 @@ input { font-family: inherit; }
     background: var(--c-bg);
 }
 
-/* Grille de fond animée */
+/* Grille de fond animÃ©e */
 .hero__grid {
     position: absolute;
     inset: 0;
@@ -435,7 +472,7 @@ input { font-family: inherit; }
     animation: fadeUp 0.6s var(--t-slow) 0.3s both;
 }
 
-/* Barre de recherche hero — plus grande */
+/* Barre de recherche hero â€” plus grande */
 .search-bar--hero {
     width: min(580px, 90vw);
     height: 56px;
@@ -535,7 +572,7 @@ input { font-family: inherit; }
     overflow: hidden;
 }
 
-/* Header spécifique carte */
+/* Header spÃ©cifique carte */
 .site-header--map {
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -584,16 +621,16 @@ input { font-family: inherit; }
     pointer-events: none;
 }
 
-/* Panel carte — style widget */
+/* Panel carte â€” style widget */
 .map-widget {
     position: absolute;
-    background: rgba(10, 14, 20, 0.88);
+    background: color-mix(in oklab, var(--c-surface) 88%, transparent);
     backdrop-filter: blur(12px);
     border: 1px solid var(--c-border-2);
     border-radius: var(--radius-md);
 }
 
-/* Légende */
+/* LÃ©gende */
 .map-legend {
     top: 20px;
     right: 20px;
@@ -641,7 +678,7 @@ input { font-family: inherit; }
     color: var(--c-text-muted);
 }
 
-/* Échelle */
+/* Ã‰chelle */
 .map-scale {
     bottom: 24px;
     left: 24px;
@@ -742,42 +779,6 @@ input { font-family: inherit; }
     max-width: 1300px;
 }
 
-/* Card tableau */
-.address-table-card {
-    background: var(--c-surface);
-    border: 1px solid var(--c-border);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-}
-
-.address-table-card__header {
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--c-border);
-    background: var(--c-surface-2);
-}
-
-.address-table-card__title {
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: var(--c-text);
-}
-
-.address-table-card__tag {
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--c-cyan);
-    padding: 3px 10px;
-    border: 1px solid var(--c-cyan);
-    border-radius: 999px;
-    opacity: 0.7;
-}
-
 /* Tableau */
 .address-table {
     width: 100%;
@@ -836,11 +837,6 @@ input { font-family: inherit; }
     white-space: nowrap;
 }
 
-.table-pill--date {
-    background: rgba(255,255,255,0.05);
-    color: var(--c-text-muted);
-    border: 1px solid var(--c-border-2);
-}
 
 .table-pill--success {
     background: rgba(34, 197, 94, 0.1);
@@ -940,7 +936,7 @@ input { font-family: inherit; }
     margin: 4px 0;
 }
 
-/* Barre de criticité */
+/* Barre de criticitÃ© */
 .criticite-bar {
     display: flex;
     flex-direction: column;
@@ -1004,8 +1000,8 @@ input { font-family: inherit; }
     .site-header--map .site-header__right { display: none; }
     .address-page { padding: 24px 20px; }
     .address-table { min-width: 640px; }
-    .address-table-card { overflow-x: auto; }
 }
+
 
 @media (max-width: 600px) {
     .hero__stats { gap: 20px; }
@@ -1016,7 +1012,7 @@ input { font-family: inherit; }
 }
 
 /* =========================================================
-   BANDEAU COULISSANT CRÉDITS
+   BANDEAU COULISSANT CRÃ‰DITS
    ========================================================= */
 .credits-ticker {
     position: fixed;
@@ -1024,7 +1020,7 @@ input { font-family: inherit; }
     left: 0;
     width: 100%;
     z-index: 50;
-    background: rgba(10, 14, 20, 0.92);
+    background: color-mix(in oklab, var(--c-surface) 92%, transparent);
     backdrop-filter: blur(10px);
     border-top: 1px solid var(--c-border);
     overflow: hidden;
@@ -1092,7 +1088,9 @@ input { font-family: inherit; }
     color: var(--c-cyan);
 }
 
-/* Décaler le hero pour pas masquer le contenu */
+/* DÃ©caler le hero pour pas masquer le contenu */
 .hero {
     padding-bottom: 36px;
 }
+
+

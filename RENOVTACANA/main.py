@@ -67,11 +67,16 @@ def get_canalisations(
     params  = []
 
     if adresse:
-        filters.append("LOWER(adresse) LIKE LOWER(?)")
-        params.append(f"%{adresse}%")
+        filters.append("""
+            (
+                normalize_text(adresse) LIKE '%' || normalize_text(?) || '%'
+                OR normalize_text(adresse || ' ' || COALESCE(commune, '')) LIKE '%' || normalize_text(?) || '%'
+            )
+        """)
+        params.extend([adresse, adresse])
     if commune:
-        filters.append("LOWER(commune) LIKE LOWER(?)")
-        params.append(f"%{commune}%")
+        filters.append("normalize_text(commune) LIKE '%' || normalize_text(?) || '%'")
+        params.append(commune)
     if materiau:
         filters.append("materiau = ?")
         params.append(materiau)
@@ -419,8 +424,10 @@ def get_stats_adresse(adresse: str = Query(default="")):
                COUNT(CASE WHEN criticite >= 70 THEN 1 END),
                SUM(nb_fuites)
         FROM canalisations
-        WHERE LOWER(adresse) LIKE LOWER(?)
-    """, (f"%{adresse}%",))
+        WHERE
+            normalize_text(adresse) LIKE '%' || normalize_text(?) || '%'
+            OR normalize_text(adresse || ' ' || COALESCE(commune, '')) LIKE '%' || normalize_text(?) || '%'
+    """, (adresse, adresse))
     r = cur.fetchone()
     conn.close()
 
