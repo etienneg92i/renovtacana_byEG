@@ -234,10 +234,14 @@ body {
 .map-widget {
     position: absolute;
     z-index: 1000;
-    background: rgba(10, 14, 20, 0.90);
+    background: color-mix(in oklab, var(--c-surface) 92%, transparent);
     backdrop-filter: blur(12px);
     border: 1px solid var(--c-border-2);
     border-radius: var(--radius-md);
+}
+
+body.theme-dark .map-widget {
+    background: rgba(10, 14, 20, 0.90);
 }
 
 .map-legend {
@@ -277,7 +281,6 @@ body {
     flex-direction: column;
     justify-content: space-between;
     font-size: 0.65rem;
-    color: var(--c-text);
     color: var(--c-text-muted);
 }
 

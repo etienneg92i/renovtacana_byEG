@@ -5,14 +5,28 @@
         {
             "label": "Lancer le serveur",
             "type": "shell",
-            "command": "uvicorn main:app --reload",
+            "command": "if (Test-Path 'RENOVTACANA/main.py') { Set-Location 'RENOVTACANA' }; python -m uvicorn main:app --reload",
             "isBackground": true,
             "problemMatcher": [],
             "runOptions": {
                 "runOn": "folderOpen"
             },
-            "options": {
-                "cwd": "${workspaceFolder}/RENOVTACANA"
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": false
+            }
+        },
+        {
+            "label": "Lancer le serveur (manuel)",
+            "type": "shell",
+            "command": "if (Test-Path 'RENOVTACANA/main.py') { Set-Location 'RENOVTACANA' }; python -m uvicorn main:app --reload",
+            "isBackground": true,
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "clear": false
             }
         }
     ]

@@ -6,6 +6,7 @@
 
     let miniMap = null;
     let miniLayer = null;
+    let baseTileLayer = null;
 
     document.addEventListener("DOMContentLoaded", initMiniMap);
 
@@ -20,10 +21,8 @@
             attributionControl: false,
         });
 
-        L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-            subdomains: "abcd",
-            maxZoom: 20,
-        }).addTo(miniMap);
+        applyMiniMapTheme();
+        observeThemeChanges();
 
         try {
             const res = await fetch(GEOJSON_CANALISATIONS);
@@ -69,6 +68,27 @@
         }).addTo(miniMap);
 
         // Keep a fixed Nice-area framing instead of auto-zooming on each load.
+    }
+
+    function applyMiniMapTheme() {
+        const dark = document.body.classList.contains("theme-dark");
+        const tileUrl = dark
+            ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+
+        if (baseTileLayer) miniMap.removeLayer(baseTileLayer);
+        baseTileLayer = L.tileLayer(tileUrl, {
+            subdomains: "abcd",
+            maxZoom: 20,
+        }).addTo(miniMap);
+    }
+
+    function observeThemeChanges() {
+        const observer = new MutationObserver(() => applyMiniMapTheme());
+        observer.observe(document.body, {
+            attributes: true,
+            attributeFilter: ["class"],
+        });
     }
 
     function getLineStyle(crit) {

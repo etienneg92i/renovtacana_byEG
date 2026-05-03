@@ -1,16 +1,14 @@
 ﻿/**
  * carte.js â€” Carte interactive Leaflet
- * Canalisations + overlay chantiers + sÃ©lection de zone
+ * Canalisations + sÃ©lection de zone
  */
 
 const GEOJSON_CANALISATIONS = "http://127.0.0.1:8000/api/geojson/canalisations";
-const GEOJSON_CHANTIERS     = "../assets/data/chantiers.geojson";
 
-let map, geoLayer, chantiersLayer, drawLayer, selectRectangle;
+let map, geoLayer, drawLayer, selectRectangle;
 let baseTileLayer = null;
 let allFeatures    = [];
 let activeFilter   = "all";
-let showChantiers  = false;
 let selectMode     = false;
 
 // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -19,7 +17,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     await loadCanalisations();
     initFilters();
     initSearch();
-    initChantiers();
     initZoneSelect();
 });
 
@@ -104,54 +101,6 @@ function getLineStyle(crit) {
     if (crit >= 20)    return { color: "#eab308", weight: 2,   opacity: 0.75 };
     if (crit >= 10)    return { color: "#84cc16", weight: 1.8, opacity: 0.7 };
     return                    { color: "#00d4aa", weight: 1.5, opacity: 0.65 };
-}
-
-// â”€â”€ Overlay chantiers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-async function initChantiers() {
-    try {
-        const res  = await fetch(GEOJSON_CHANTIERS);
-        const data = await res.json();
-
-        const etatColor = {
-            "PlanifiÃ©":                    "#22c55e",
-            "ValidÃ© en planification":     "#00d4aa",
-            "En attente de planification": "#64748b",
-        };
-
-        chantiersLayer = L.geoJSON(data, {
-            pointToLayer: function (feature, latlng) {
-                const color = etatColor[feature.properties.etat] || "#64748b";
-                return L.circleMarker(latlng, {
-                    radius: 5, fillColor: color, color: "#0a0e14",
-                    weight: 1, fillOpacity: 0.85,
-                });
-            },
-            onEachFeature: function (feature, layer) {
-                const p = feature.properties;
-                layer.bindPopup(`
-                    <div style="font-family:monospace;font-size:12px;min-width:200px">
-                        <div style="font-weight:700;margin-bottom:6px;color:#00d4aa">${p.id}</div>
-                        <div style="color:#888;margin-bottom:4px">${p.libelle}</div>
-                        <div><b>${p.commune}</b></div>
-                        <div style="color:#888;margin-top:4px">${p.debut} â†’ ${p.fin}</div>
-                        <div style="margin-top:4px;padding:2px 8px;background:rgba(0,212,170,0.1);
-                             border:1px solid rgba(0,212,170,0.3);border-radius:999px;
-                             display:inline-block;font-size:11px">${p.etat}</div>
-                    </div>
-                `, { className: "dark-popup" });
-            }
-        });
-    } catch(e) { console.warn("Chantiers non chargÃ©s", e); }
-
-    document.getElementById("toggle-chantiers")?.addEventListener("click", function () {
-        showChantiers = !showChantiers;
-        this.classList.toggle("active", showChantiers);
-        if (showChantiers) {
-            chantiersLayer?.addTo(map);
-        } else {
-            chantiersLayer && map.removeLayer(chantiersLayer);
-        }
-    });
 }
 
 // â”€â”€ SÃ©lection de zone â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
