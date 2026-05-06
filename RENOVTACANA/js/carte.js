@@ -3,13 +3,13 @@
  * Canalisations + sÃ©lection de zone
  */
 
-const GEOJSON_CANALISATIONS = "http://127.0.0.1:8000/api/geojson/canalisations";
+const GEOJSON_CANALISATIONS = "/api/geojson/canalisations";
 
 let map, geoLayer, drawLayer, selectRectangle;
 let baseTileLayer = null;
-let allFeatures    = [];
-let activeFilter   = "all";
-let selectMode     = false;
+let allFeatures = [];
+let activeFilter = "all";
+let selectMode = false;
 
 // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 document.addEventListener("DOMContentLoaded", async function () {
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 function initMap() {
     map = L.map("map", {
         center: [43.705, 7.265],
-        zoom:   13,
+        zoom: 13,
         zoomControl: false,
     });
 
@@ -62,16 +62,16 @@ function observeThemeChanges() {
 // â”€â”€ Canalisations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadCanalisations() {
     try {
-        document.getElementById("map-loading").querySelector("span").textContent = 
+        document.getElementById("map-loading").querySelector("span").textContent =
             "Chargement des 55 524 canalisationsâ€¦";
-        const res  = await fetch(GEOJSON_CANALISATIONS);
+        const res = await fetch(GEOJSON_CANALISATIONS);
         const data = await res.json();
         allFeatures = data.features || [];
         renderLayer(allFeatures);
         document.getElementById("map-count").textContent =
             `${allFeatures.length.toLocaleString("fr-FR")} canalisations`;
         document.getElementById("map-loading").style.display = "none";
-    } catch(e) {
+    } catch (e) {
         document.getElementById("map-loading").innerHTML =
             `<span style="color:var(--c-danger)">âš ï¸ Erreur chargement des donnÃ©es</span>`;
     }
@@ -85,8 +85,8 @@ function renderLayer(features) {
             const p = feature.properties;
             layer.on("mouseover", e => { layer.setStyle({ weight: 5, opacity: 1 }); showTooltip(e, p); });
             layer.on("mousemove", e => moveTooltip(e));
-            layer.on("mouseout",  ()  => { if (!selectMode) geoLayer.resetStyle(layer); hideTooltip(); });
-            layer.on("click",     ()  => {
+            layer.on("mouseout", () => { if (!selectMode) geoLayer.resetStyle(layer); hideTooltip(); });
+            layer.on("click", () => {
                 if (selectMode) return;
                 if (p.adr) window.location.href = `index.html?adresse=${encodeURIComponent(p.adr)}`;
             });
@@ -95,12 +95,12 @@ function renderLayer(features) {
 }
 
 function getLineStyle(crit) {
-    if (crit == null)  return { color: "#475569", weight: 1.5, opacity: 0.5 };
-    if (crit >= 70)    return { color: "#ef4444", weight: 3,   opacity: 0.9 };
-    if (crit >= 40)    return { color: "#f97316", weight: 2.5, opacity: 0.85 };
-    if (crit >= 20)    return { color: "#eab308", weight: 2,   opacity: 0.75 };
-    if (crit >= 10)    return { color: "#84cc16", weight: 1.8, opacity: 0.7 };
-    return                    { color: "#00d4aa", weight: 1.5, opacity: 0.65 };
+    if (crit == null) return { color: "#475569", weight: 1.5, opacity: 0.5 };
+    if (crit >= 70) return { color: "#ef4444", weight: 3, opacity: 0.9 };
+    if (crit >= 40) return { color: "#f97316", weight: 2.5, opacity: 0.85 };
+    if (crit >= 20) return { color: "#eab308", weight: 2, opacity: 0.75 };
+    if (crit >= 10) return { color: "#84cc16", weight: 1.8, opacity: 0.7 };
+    return { color: "#00d4aa", weight: 1.5, opacity: 0.65 };
 }
 
 // â”€â”€ SÃ©lection de zone â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -158,8 +158,8 @@ function analyseZone(bounds) {
 
     if (!inside.length) return;
 
-    const total   = inside.length;
-    const crits   = inside.filter(f => (f.properties.crit ?? 0) >= 70).length;
+    const total = inside.length;
+    const crits = inside.filter(f => (f.properties.crit ?? 0) >= 70).length;
     const critMoy = inside.filter(f => f.properties.crit != null)
         .reduce((s, f, _, a) => s + f.properties.crit / a.length, 0);
 
@@ -208,10 +208,10 @@ function initFilters() {
 function applyFilter() {
     let filtered;
     switch (activeFilter) {
-        case "critique":  filtered = allFeatures.filter(f => (f.properties.crit ?? 0) >= 70); break;
+        case "critique": filtered = allFeatures.filter(f => (f.properties.crit ?? 0) >= 70); break;
         case "attention": filtered = allFeatures.filter(f => { const c = f.properties.crit ?? 0; return c >= 40 && c < 70; }); break;
-        case "bon":       filtered = allFeatures.filter(f => (f.properties.crit ?? 0) < 40); break;
-        default:          filtered = allFeatures;
+        case "bon": filtered = allFeatures.filter(f => (f.properties.crit ?? 0) < 40); break;
+        default: filtered = allFeatures;
     }
     renderLayer(filtered);
     document.getElementById("map-count").textContent =
@@ -257,16 +257,16 @@ function initSearch() {
 const tooltip = document.getElementById("map-tooltip");
 
 function showTooltip(e, p) {
-    document.getElementById("tt-id").textContent   = p.id || "";
-    document.getElementById("tt-adr").textContent  = p.adr || "â€”";
-    document.getElementById("tt-mat").textContent  = p.mat || "â€”";
+    document.getElementById("tt-id").textContent = p.id || "";
+    document.getElementById("tt-adr").textContent = p.adr || "â€”";
+    document.getElementById("tt-mat").textContent = p.mat || "â€”";
     document.getElementById("tt-diam").textContent = p.diam ? `${p.diam} mm` : "â€”";
     document.getElementById("tt-long").textContent = p.long ? `${p.long} m` : "â€”";
     const crit = p.crit;
     if (crit != null) {
         document.getElementById("tt-crit-val").textContent = `${crit.toFixed(1)}%`;
         const fill = document.getElementById("tt-fill");
-        fill.style.width      = `${Math.min(crit,100)}%`;
+        fill.style.width = `${Math.min(crit, 100)}%`;
         fill.style.background = crit >= 70 ? "#ef4444" : crit >= 40 ? "#f97316" : "#00d4aa";
     } else {
         document.getElementById("tt-crit-val").textContent = "â€”";
@@ -279,11 +279,11 @@ function showTooltip(e, p) {
 function moveTooltip(e) {
     const rect = document.getElementById("map").getBoundingClientRect();
     let x = e.originalEvent.clientX - rect.left + 14;
-    let y = e.originalEvent.clientY - rect.top  - 20;
-    if (x + 240 > rect.width)  x -= 260;
+    let y = e.originalEvent.clientY - rect.top - 20;
+    if (x + 240 > rect.width) x -= 260;
     if (y + 200 > rect.height) y -= 200;
     tooltip.style.left = `${x}px`;
-    tooltip.style.top  = `${y}px`;
+    tooltip.style.top = `${y}px`;
 }
 
 function hideTooltip() { tooltip.style.display = "none"; }

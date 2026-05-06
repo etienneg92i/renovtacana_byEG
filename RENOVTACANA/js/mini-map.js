@@ -2,7 +2,7 @@
  * mini-map.js - Mini heatmap sur page index
  */
 (function () {
-    const GEOJSON_CANALISATIONS = "http://127.0.0.1:8000/api/geojson/canalisations";
+    const GEOJSON_CANALISATIONS = "/api/geojson/canalisations";
 
     let miniMap = null;
     let miniLayer = null;
@@ -29,7 +29,7 @@
             const data = await res.json();
             const features = data.features || [];
             renderFeatures(features);
-        } catch (e) {}
+        } catch (e) { }
     }
 
     function renderFeatures(features) {

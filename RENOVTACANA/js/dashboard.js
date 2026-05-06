@@ -2,7 +2,7 @@
  * dashboard.js — Tableau de bord RenovTaCana
  */
 
-const API = "http://127.0.0.1:8000";
+const API = "";
 let planData = [];
 let planCommune = "";
 let planPage = 1;
@@ -24,24 +24,24 @@ document.addEventListener("DOMContentLoaded", async function () {
 // ── Dashboard principal ───────────────────────────────────
 async function loadDashboard() {
     try {
-        const res  = await fetch(`${API}/api/dashboard`);
+        const res = await fetch(`${API}/api/dashboard`);
         const data = await res.json();
 
         // KPIs
-        setEl("kpi-total",     data.total_canalisations.toLocaleString("fr-FR"));
-        setEl("kpi-km",        `${data.km_total} km`);
+        setEl("kpi-total", data.total_canalisations.toLocaleString("fr-FR"));
+        setEl("kpi-km", `${data.km_total} km`);
         setEl("kpi-critiques", data.critiques.toLocaleString("fr-FR"));
         setEl("kpi-attention", data.attention.toLocaleString("fr-FR"));
         setEl("kpi-chantiers", data.nb_chantiers.toLocaleString("fr-FR"));
-        setEl("kpi-fuites",    data.total_fuites.toLocaleString("fr-FR"));
-        setEl("kpi-crit-moy",  `${data.criticite_moyenne}%`);
+        setEl("kpi-fuites", data.total_fuites.toLocaleString("fr-FR"));
+        setEl("kpi-crit-moy", `${data.criticite_moyenne}%`);
 
         // Barres criticité
         const total = data.total_canalisations;
         animBar("bar-critique", "val-critique", data.critiques, total);
         animBar("bar-attention", "val-attention", data.attention, total);
-        animBar("bar-bon",       "val-bon",       data.bon,       total);
-        animBar("bar-neval",     "val-neval",     data.non_eval,  total);
+        animBar("bar-bon", "val-bon", data.bon, total);
+        animBar("bar-neval", "val-neval", data.non_eval, total);
 
         // Chantiers par état
         renderChantiersEtat(data.chantiers_etat, data.nb_chantiers);
@@ -52,7 +52,7 @@ async function loadDashboard() {
         // Années de pose
         renderAnnees(data.annees);
 
-    } catch(e) {
+    } catch (e) {
         console.error("Erreur dashboard:", e);
     }
 }
@@ -70,8 +70,8 @@ function animBar(barId, valId, count, total) {
 // ── Chantiers par état ────────────────────────────────────
 function renderChantiersEtat(data, total) {
     const colors = {
-        "Planifié":                    "crit-bar-fill--success",
-        "Validé en planification":     "crit-bar-fill--cyan",
+        "Planifié": "crit-bar-fill--success",
+        "Validé en planification": "crit-bar-fill--cyan",
         "En attente de planification": "crit-bar-fill--neutral",
     };
     const container = document.getElementById("chantiers-bars");
@@ -81,7 +81,7 @@ function renderChantiersEtat(data, total) {
             <span class="crit-bar-label" style="font-size:0.72rem">${r.etat}</span>
             <div class="crit-bar-track">
                 <div class="crit-bar-fill ${colors[r.etat] || 'crit-bar-fill--neutral'}"
-                     style="width:0%" data-target="${(r.count/total*100).toFixed(1)}"></div>
+                     style="width:0%" data-target="${(r.count / total * 100).toFixed(1)}"></div>
             </div>
             <span class="crit-bar-val">${r.count.toLocaleString("fr-FR")}</span>
         </div>
@@ -155,11 +155,11 @@ async function loadPlanTravaux(commune, offset = 0) {
         const params = new URLSearchParams({ limit: PLAN_PAGE_SIZE, offset });
         if (commune) params.append("commune", commune);
 
-        const res  = await fetch(`${API}/api/plan-travaux?${params}`);
+        const res = await fetch(`${API}/api/plan-travaux?${params}`);
         const json = await res.json();
-        planData   = json.rues || [];
+        planData = json.rues || [];
         renderPlanTable(planData, offset);
-    } catch(e) {
+    } catch (e) {
         tbody.innerHTML = `<tr class="row-empty-msg"><td colspan="10">Erreur chargement</td></tr>`;
     }
 }
@@ -200,16 +200,16 @@ function renderPlanTable(data, offset = 0) {
 // ── Communes pour le filtre ───────────────────────────────
 async function loadCommunes() {
     try {
-        const res  = await fetch(`${API}/api/filtres`);
+        const res = await fetch(`${API}/api/filtres`);
         const data = await res.json();
-        const sel  = document.getElementById("plan-commune");
+        const sel = document.getElementById("plan-commune");
         if (!sel) return;
         data.communes?.forEach(c => {
             const opt = document.createElement("option");
             opt.value = c; opt.textContent = c;
             sel.appendChild(opt);
         });
-    } catch(e) {}
+    } catch (e) { }
 }
 
 // ── Export CSV plan ───────────────────────────────────────
@@ -217,26 +217,26 @@ async function exportPlanCSV() {
     try {
         const params = new URLSearchParams({ limit: 5000, offset: 0 });
         if (planCommune) params.append("commune", planCommune);
-        const res  = await fetch(`${API}/api/plan-travaux?${params}`);
+        const res = await fetch(`${API}/api/plan-travaux?${params}`);
         const json = await res.json();
         const data = json.rues || [];
 
-        const headers = ["Rang","Adresse","Commune","Nb canalisations","Score priorité",
-                         "Criticité moy. (%)","Fuites totales","Longueur (m)","Matériaux"];
+        const headers = ["Rang", "Adresse", "Commune", "Nb canalisations", "Score priorité",
+            "Criticité moy. (%)", "Fuites totales", "Longueur (m)", "Matériaux"];
         const rows = data.map((r, i) => [
-            i+1, r.adresse, r.commune, r.nb_canalisations,
+            i + 1, r.adresse, r.commune, r.nb_canalisations,
             r.score_max, r.crit_moy, r.total_fuites, r.longueur_tot, r.materiaux
         ]);
-        const csv  = [headers, ...rows].map(r => r.map(v => `"${v ?? ""}"`).join(",")).join("\n");
-        const blob = new Blob(["\uFEFF"+csv], { type: "text/csv;charset=utf-8;" });
-        const url  = URL.createObjectURL(blob);
-        const a    = Object.assign(document.createElement("a"), { href: url, download: "plan_travaux.csv" });
+        const csv = [headers, ...rows].map(r => r.map(v => `"${v ?? ""}"`).join(",")).join("\n");
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = Object.assign(document.createElement("a"), { href: url, download: "plan_travaux.csv" });
         a.click();
         URL.revokeObjectURL(url);
-    } catch(e) { alert("Erreur export"); }
+    } catch (e) { alert("Erreur export"); }
 }
 
 // ── Utilitaires ───────────────────────────────────────────
-function val(id)        { return document.getElementById(id)?.value || ""; }
+function val(id) { return document.getElementById(id)?.value || ""; }
 function setEl(id, txt) { const e = document.getElementById(id); if (e) e.textContent = txt; }
 function on(id, ev, fn) { document.getElementById(id)?.addEventListener(ev, fn); }
