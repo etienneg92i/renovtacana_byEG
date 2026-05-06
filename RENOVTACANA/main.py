@@ -5,6 +5,7 @@ Base SQLite avec vraies données Métropole Nice Côte d'Azur
 
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 import sqlite3, os, re
 import unicodedata
@@ -536,8 +537,11 @@ def get_geojson_canalisations():
         headers={"Content-Encoding": "gzip", "Cache-Control": "public, max-age=3600"}
     )
 
-app.mount("/", StaticFiles(directory=".", html=True), name="static")
+@app.get("/")
+def home():
+    return RedirectResponse(url="/pages/index.html")
 
+app.mount("/", StaticFiles(directory=".", html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn
